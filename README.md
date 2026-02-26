@@ -1,5 +1,6 @@
 # diego_personal
 
-## Repositorio de proba, para aprender a usar _Git_.
+## Plantillas
+### Typst
+1. Memorias de laboratorio (memoria/)
 
-- Traballo 1 de biofísica rematado.
