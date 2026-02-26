@@ -1,0 +1,236 @@
+/* Plantilla de memorias */
+
+/*
+ ****************
+ *              *
+ *   Funcións   *
+ *  Auxiliares  *
+ *              *
+ ****************
+ */
+
+// Título
+#let título(
+    portada: false,
+    titulo: none,
+    titulo-resume: none, autor: none, data: none,
+    descripcion: none,
+) = {
+  if portada == false {
+    /* SEN PORTADA */
+
+    // Título, autor e resumo cun place na parte superio da páxina
+    place(
+      auto,
+      scope: "parent",
+      float: true,
+      [
+        #box(width: 100%, height: auto)[
+          #set align(center + horizon)
+          #text(size: 1.8em)[
+              #titulo
+          ]
+          #parbreak()
+          #text(
+            size: 1.2em,
+            style: "italic",
+            weight: "regular",
+          )[
+            #if type(autor) == str {
+              autor
+            } else if autor.len() > 0 {
+              for individuo in autor [ #individuo\ ]
+            } else {}
+          ]
+          #parbreak()
+          #text(
+            size: 0.8em,
+            style: "italic",
+            weight: "thin",
+            fill: luma(100),
+          )[
+            #if data != none {
+              data.display(
+                "[day]/[month]/[year]"
+              )
+            } else []
+          ]
+        ]
+        #v(1.2em)
+        #if descripcion == none [] else [
+          #set align(center)
+          #line(length: 20%, stroke: black + 0.5pt)
+          #text(style: "oblique", weight: "bold")[#titulo-resume]\
+          #set text(size: 0.8em, style: "italic")
+          #descripcion
+          #line(length: 10%, stroke: black + 0.5pt)
+        ]
+        #v(0.6em)
+      ]
+    )
+  } else {
+    /* PORTADA */
+
+    // Fago que a portada non teña número de páxina
+      set page(numbering: none)
+      counter(page).update(0)
+    // Meto título, autores e descrición nun align center + horizon
+      align(
+        center + horizon,
+      [
+        #box(width: 70%, height: auto)[
+          #set align(center + horizon)
+          #text(size: 1.8em)[
+              #titulo
+          ]
+          #parbreak()
+          #text(
+            size: 1.2em,
+            style: "italic",
+            weight: "regular",
+          )[
+            #if type(autor) == str {
+              autor
+            } else if autor.len() > 0 {
+              for individuo in autor [ #individuo\ ]
+            } else {}
+          ]
+          #parbreak()
+          #text(
+            size: 0.8em,
+            style: "italic",
+            weight: "thin",
+            fill: luma(100),
+          )[
+            #if data != none {
+              data.display(
+                "[day]/[month]/[year]"
+              )
+            } else []
+          ]
+        ]
+        #v(1.2em)
+        #if descripcion == none [] else [
+          #set align(center)
+          #line(length: 20%, stroke: black + 0.5pt)
+          #text(style: "oblique", weight: "bold")[#titulo-resume]\
+          #set text(size: 0.8em, style: "italic")
+          #descripcion
+          #line(length: 10%, stroke: black + 0.5pt)
+        ]
+        #v(0.6em)
+      ]
+    )
+  }
+}
+
+/*
+ ****************
+ *              *
+ * Estilo xeral *
+ *              *
+ ****************
+ */
+#let estilo(
+    // Opcións da páxina
+    columnas: 1,
+    separacion-columnas: 4% + 0pt, // default de typst
+    marxes: auto,
+
+    // Opcións do texto
+    fonte: "Libertinus Serif",
+    tamaño-fonte: 11pt,
+    linguaxe: "es",
+
+    // Opcións do documento
+    titulo: none,
+    portada: false,
+    autor: (),
+    data: datetime.today(),
+    descripcion: none, // O resume / abstract
+    claves: (), // Palabras clave
+
+    // Outras opcións
+    titulo-resume: "Resume:",
+    justificacion: true,
+    hyphens: true,
+
+    documento
+) = {
+    set document(
+      title: titulo,
+      author: autor,
+      date:
+        if data != none {data} else {none},
+      description: descripcion,
+      keywords: claves,
+    )
+    set text(
+      font: fonte,
+      size: tamaño-fonte,
+      lang: linguaxe,
+      hyphenate: hyphens,
+    )
+    set par(
+      justify: justificacion
+    )
+    set page(
+      paper: "a4", margin: marxes, numbering: "1",
+    )
+    set columns(
+      columnas, gutter: separacion-columnas,
+)
+    set heading(numbering: "1.")
+    show bibliography: it => {
+      set par(justify: false)
+      set text(hyphenate: true)
+      it
+    }
+
+    // Título
+    título(
+        titulo: titulo,
+        portada: portada,
+        titulo-resume: titulo-resume,
+        autor: autor,
+        data: data,
+        descripcion: descripcion,
+      )
+
+      if portada == true { pagebreak() } else {}
+
+    // Resto do documento
+    columns(documento)
+}
+
+
+
+
+/*
+ **********************
+ *                    *
+ * Estilo de captions *
+ *                    *
+ **********************
+ */
+
+#let captions(
+  // Xeral
+  fonte: "Libertinus serif",
+  // Suplemento
+  sup-style: "normal", sup-weight: "regular",
+  // Separador
+  sep: auto, sep-style: "normal", sep-weight: "regular",
+  // Corpo
+  body-style: "normal", body-weight: "regular",
+
+  arquivo
+) = {
+    set figure.caption(separator: sep)
+    show figure.caption: it => { 
+        text(font: fonte, style: sup-style, weight: sup-weight)[ #it.supplement #context it.counter.display(it.numbering)]
+        text(font: fonte, style: sep-style, weight: sep-weight)[#it.separator]
+        text(font: fonte, style: body-style, weight: body-weight)[#it.body]
+    }
+    arquivo
+}

@@ -1,0 +1,4 @@
+[package]
+name = "memoria"
+version = "1.0.0"
+entrypoint = "memoria.typ"
