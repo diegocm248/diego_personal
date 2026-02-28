@@ -1,6 +1,10 @@
-# diego_personal
+# Repositorio Personal
+---
 
-## Plantillas
-### Typst
-1. Memorias de laboratorio (memoria/)
+### Plantillas
+---
 
+#### Typst
++ *Memorias de laboratorio (memoria/)*
+
+---
